@@ -30,7 +30,7 @@ def initialize_GFF3(filename: str, cell_wall_genes:list[str]) -> Genome:
                 # check if a gene or new chomosome
                 if attributes["ID"][:4] == 'gene':
                     # check if gene is a cell wall gene, skip rest
-                    if in_cell_wall(attributes["ID"], cell_wall_genes):
+                    if is_cell_wall(attributes["ID"], cell_wall_genes):
                         initializing = False
                         adding = True
                         # initialize gene object and append to chromosome object
@@ -73,7 +73,7 @@ def parse_attributes(attributes: str) -> dict:
 #read file containting cell wall protein data and turn it into a list of genes corresponding to proteins
 
 
-def in_cell_wall(gene:str, cell_wall_genes:list[str]) -> bool:
+def is_cell_wall(gene:str, cell_wall_genes:list[str]) -> bool:
     for g in cell_wall_genes:
         if g == gene:
             return True
