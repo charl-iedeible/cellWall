@@ -5,6 +5,8 @@ import numpy as np
 
 from HMM import HMM
 
+TESTS_BASE_PATH = Path("1_hidden_markov_model/tests")
+
 def read_file(file_path:Path) -> list:
     l = list()
     with open(file_path, 'r') as file:
@@ -66,14 +68,14 @@ def read_hmm_test(file_path:Path) -> tuple[HMM, list[list]]:
 
 def get_test_cases(test_name):
     # function written by ChatGPT
-    input_path = Path("tests") / test_name / "input"
+    input_path = TESTS_BASE_PATH / test_name / "input"
     return range(len(list(input_path.glob("input_*.txt"))))
 
 # parametrization written by ChatGPT (nothing else though)
 @pytest.mark.parametrize("i", get_test_cases("compute_likelihood_given_state_sequence"))
 def test_compute_likelihood_given_state_sequence(i):
     # read in the inputs and the truth value
-    test_path = Path("tests/compute_likelihood_given_state_sequence")
+    test_path = TESTS_BASE_PATH / "compute_likelihood_given_state_sequence"
     hmm, params = read_hmm_test(test_path / "input" / f"input_{i}.txt")
     truth = read_file(test_path / "output" / f"output_{i}.txt")
 
