@@ -1,0 +1,5 @@
+# star_x_position star_y_position star_x_velocity star_x_velocity
+1.8 2.2 0.603 0.603
+4.4 4.8 -0.570 -0.547 
+2.68 3.48 0.018 0.018
+9.2 9.2 -0.077 -0.068
