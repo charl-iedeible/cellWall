@@ -63,7 +63,7 @@ def find_matches(ref_dict: dict, gene_dict: dict, tmer_bound: int, match_bound: 
     # cycle through genes with matches within the match bound
     for gene, num_match in counts.items():
         if num_match in range(len(gene_dict.keys()) - match_bound, len(gene_dict.keys()) + 1):
-            matches += gene
+            matches.append(gene)
         else:
             break
     
