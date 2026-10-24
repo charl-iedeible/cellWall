@@ -40,3 +40,23 @@ class Gene(Node):
         self.end: int = 0
         self.strand: bool | None = None
         self.family: str | None = None
+        
+class EvolutionaryTree:
+    def __init__(self, name):
+        self.name = name
+        self.nodes = {}
+        self.root = Species(node_id=species_name, parent=None)
+        
+    def add_node(self, child: Node, parent: Node):
+        parent.add_child(child)
+        self.nodes[child.node_id] = child
+
+    def get_node(self, node_id):
+        return self.nodes.get(node_id)
+
+class Species(Node):
+    def __init__(self, species_name: str, parent: Node):
+        super().__init__(node_id=gene_id, parent=parent)
+        self.genome = Genome | None = None
+        self.lineage: str | None = None
+        self.color: str | None = None
