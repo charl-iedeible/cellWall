@@ -45,7 +45,7 @@ class EvolutionaryTree:
     def __init__(self, name):
         self.name = name
         self.nodes = {}
-        self.root = Species(node_id=species_name, parent=None)
+        self.root = Species | None = None
         
     def add_node(self, child: Node, parent: Node):
         parent.add_child(child)
@@ -56,7 +56,7 @@ class EvolutionaryTree:
 
 class Species(Node):
     def __init__(self, species_name: str, parent: Node):
-        super().__init__(node_id=gene_id, parent=parent)
+        super().__init__(node_id=species_name, parent=parent)
         self.genome = Genome | None = None
         self.lineage: str | None = None
         self.color: str | None = None
