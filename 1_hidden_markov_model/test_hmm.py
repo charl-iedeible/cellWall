@@ -86,6 +86,24 @@ def test_compute_likelihood_given_state_sequence(i):
     # check the computed values and actual values are close to equal
     assert output == pytest.approx(truth, rel=1e-6)
 
+@pytest.mark.parametrize("i", get_test_cases("likelihood"))
+def test_likelihood(i):
+    # read in the inputs and the truth value
+    test_path = TESTS_BASE_PATH / "likelihood"
+    hmm, params = read_hmm_test(test_path / "input" / f"input_{i}.txt")
+    truth = read_file(test_path / "output" / f"output_{i}.txt")
+
+    # we are checking both the naive and the forward method, should both give the same answer
+    # make 2x1 array with the same truth to compare to later
+    truth = np.full(2, truth)
+
+    # compute our output
+    observations = params[0]
+    output = [hmm.likelihood(observations), hmm.naive_likelihood(observations)]
+
+    # check the computed values and actual values are close to equal
+    assert output == pytest.approx(truth, rel=1e-6)
+
 # @pytest.mark.parametrize("i", get_test_cases("naive_likelihood"))
 # def test_naive_likelihood(i):
 #     test_path = Path("tests/naive_likelihood")
