@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-
 import numpy as np
 from itertools import product
+import graphviz
 
 @dataclass
 class HMM:
@@ -17,6 +17,89 @@ class HMM:
     b: np.ndarray
     states: list[any]
     possible_observations: list[any]
+
+    def visualize_graph(self):
+        graph = graphviz.Digraph('hmm', comment='A hidden Markov model')
+        graph.attr(rankdir="LR")
+        
+        # add the state nodes and transition probabilities
+        for i, state in enumerate(self.states):
+            graph.node(state, f'<{state}<sub>{i}</sub>>')
+
+        # add the edges
+        for i, row in enumerate(self.a_ij):
+            for j, value in enumerate(row):
+                print(self.states[i], self.states[j], value)
+                graph.edge(self.states[i], self.states[j], label = str(value))
+
+        # create pi subgraph using HTML table (ChatGPT assistance for this one)
+        pi = graphviz.Digraph('hmm', comment='pi probabilities')
+
+        # creates port for edges to be able to be established
+        # can access particular cell using "pi:p0:n" for north side, "pi:p0:s" for south side, etc.
+        cells = "".join(
+            f'<TD PORT="p{i}" CELLPADDING="2">{round(p, 2)}</TD>'
+            for i, p in enumerate(self.pi)
+        )
+
+        pi.node(
+            "pi",
+            f'''<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="1">
+                <TR>
+                    <TD COLSPAN="{len(self.pi)}"><B>&pi;</B></TD>
+                </TR>
+                <TR>
+                    {cells}
+                </TR>
+            </TABLE>
+            >''',
+            shape="plain"
+        )
+
+        # create the b matrix, also written by ChatGPT
+        b = graphviz.Digraph('B', comment='pi probabilities')
+        rows = []
+
+        # ports are B:b_0_0 or graph.edge('B', node, tailport="b_0_0:s")
+        for i, row in enumerate(self.b):
+            cells = "".join(
+                f'<TD PORT="b_{i}_{j}" CELLPADDING="4">{value:.2f}</TD>'
+                for j, value in enumerate(row)
+            )
+
+            rows.append(f"""
+                <TR>
+                    <TD><B>{self.states[i]}</B></TD>
+                    {cells}
+                </TR>
+            """)
+
+        b.node(
+            "B",
+            f'''<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+                <TR>
+                    <TD COLSPAN="{self.b.shape[1] + 1}">
+                        <B>B</B>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD></TD>
+                    {"".join(
+                        f"<TD><B>{ob}</B></TD>"
+                        for ob in self.possible_observations
+                    )}
+                </TR>
+                {"".join(rows)}
+            </TABLE>
+            >''',
+            shape="plain"
+        )
+
+        graph.subgraph(pi)
+        graph.subgraph(b)
+        graph.render(directory='figure')
 
     def likelihood(self, observations: list[any]) -> float:
         """
@@ -134,6 +217,8 @@ def main():
         possible_observations=[1,2,3]
     )
     # b is # state x # possible_observations
+
+    hmm.visualize_graph()
 
     p_o = hmm.naive_likelihood(observations = [3, 1, 3])
     print(p_o)

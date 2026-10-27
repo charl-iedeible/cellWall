@@ -1,0 +1,50 @@
+// A hidden Markov model
+digraph hmm {
+	rankdir=LR
+	Cold [label=<Cold<sub>0</sub>>]
+	Hot [label=<Hot<sub>1</sub>>]
+	Cold -> Cold [label=0.5]
+	Cold -> Hot [label=0.4]
+	Hot -> Cold [label=0.5]
+	Hot -> Hot [label=0.6]
+	// pi probabilities
+	subgraph hmm {
+		pi [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="1">
+                <TR>
+                    <TD COLSPAN="2"><B>&pi;</B></TD>
+                </TR>
+                <TR>
+                    <TD PORT="p0" CELLPADDING="2">0.2</TD><TD PORT="p1" CELLPADDING="2">0.8</TD>
+                </TR>
+            </TABLE>
+            > shape=plain]
+	}
+	// pi probabilities
+	subgraph B {
+		B [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+                <TR>
+                    <TD COLSPAN="4">
+                        <B>B</B>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD></TD>
+                    <TD><B>1</B></TD><TD><B>2</B></TD><TD><B>3</B></TD>
+                </TR>
+                
+                <TR>
+                    <TD><B>Cold</B></TD>
+                    <TD PORT="b_0_0" CELLPADDING="4">0.50</TD><TD PORT="b_0_1" CELLPADDING="4">0.40</TD><TD PORT="b_0_2" CELLPADDING="4">0.10</TD>
+                </TR>
+            
+                <TR>
+                    <TD><B>Hot</B></TD>
+                    <TD PORT="b_1_0" CELLPADDING="4">0.20</TD><TD PORT="b_1_1" CELLPADDING="4">0.40</TD><TD PORT="b_1_2" CELLPADDING="4">0.40</TD>
+                </TR>
+            
+            </TABLE>
+            > shape=plain]
+	}
+}
