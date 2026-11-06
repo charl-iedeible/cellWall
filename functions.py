@@ -1,7 +1,12 @@
 from datatypes import Node, Genome, Chromosome, Gene
+from Bio import SeqIO
 
 # define genome from GFF3
-def initialize_GFF3(filename: str, cell_wall_genes:list[str]) -> Genome:
+def initialize_GFF3(filename_GFF3: str, filename_FASTA: str, cell_wall_genes:list[str], tmer_bound: int, match_bound: int) -> Genome:
+    # turn FASTA into dictionary
+
+    genome = SeqIO.to_dict(SeqIO.parse(filename_FASTA, "fasta"))
+    
     # initialize a genome object to append appropriate line data to
     
     species_name = filename.split("/")[-1].split("_gca")[0]
@@ -41,7 +46,7 @@ def initialize_GFF3(filename: str, cell_wall_genes:list[str]) -> Genome:
                 # check if a gene or new chomosome
                 gene_id = attributes.get("ID", "")
                 if gene_id[:4] == 'gene':
-                    if in_cell_wall(gene_id, cell_wall_genes):
+                    if is_interest(genome[gene_id], cell_wall_genes, tmer_bound, match_bound):
                     # check if gene is a cell wall gene, skip rest
                         initializing = False
                         adding = True
@@ -79,15 +84,6 @@ def parse_attributes(attributes: str) -> dict:
             key, value = pair.split('=',1)
             pairs[key] = value
     return pairs
-
-#read file containting cell wall protein data and turn it into a list of genes corresponding to proteins
-
-def is_cell_wall(gene:str, cell_wall_genes:list[str]) -> bool:
-    #return random() > 0.5
-    for g in cell_wall_genes:
-        if g == gene:
-            return True
-    return False
 
 if __name__ == "__main__":
     genome = initialize_GFF3("achillea_ptarmica_gca982375345v1.gff3 2", [])
