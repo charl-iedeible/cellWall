@@ -2,6 +2,12 @@ import numpy as np
 from itertools import product
 import graphviz
 
+
+ # TODO: convert this into log space so there aren't underflow issues
+ # 100000 products on the order of 0.1 is (0.1)^100000 = 10^-100000 which isn't numerically stable
+ # the product of numbers is the same of the sum of the log of numbers
+ #     so then the sum of those products would be -100000 which is fine to represent
+ # then the sum of numbers is the same as numpy.logaddexp of the numbers
 class HMM:
     # initial probability, pi[i] = P(state i | start)
     # where i is the index of the state in states list
@@ -175,6 +181,8 @@ class HMM:
     
             This is a similar algorithm to likelihood, except you take the max probability at each step, and track the backsteps
             """
+           
+
     
             # alpha is indexed as t, state, so # observations x # states
             v_t = np.zeros((len(observations), len(self.states))) # 
@@ -309,7 +317,6 @@ def main():
         states = ["Cold", "Hot"],
         possible_observations=[1,2,3]
     )
-    # b is # state x # possible_observations
 
     hmm.visualize_graph()
 
