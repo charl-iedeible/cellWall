@@ -22,7 +22,7 @@ def align_genes(gene_1: str, gene_2: str) -> int:
     return count_matches/len_shorter
 #use Biopython pairwise2
 
-def synteny(database: list[Genome], arabidopsis_genome: Genome, threshold) -> dict:
+def synteny(database: list[Genome], arabidopsis_genome: list[str], threshold) -> dict:
     gene_dict = {gene.id: [] for gene in arabidopsis_genome}
     for random_genome in database:
         pairs = compare_genomes(arabidopsis_genome, random_genome,threshold)
