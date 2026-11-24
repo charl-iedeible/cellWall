@@ -32,13 +32,14 @@ class Chromosome(Node):
     def __init__(self, chromo_id: str, genome: Node, length: int):
         super().__init__(node_id=chromo_id, parent=genome)
         self.length = length
-
+        
 class Gene(Node):
     def __init__(self, gene_id: str, chromosome: Node):
         super().__init__(node_id=gene_id, parent=chromosome)
         self.start: int = 0
         self.end: int = 0
         self.strand: bool | None = None
+        self.sequence: str | None = None
         self.family: str | None = None
 
 #class EvolutionaryTree:
