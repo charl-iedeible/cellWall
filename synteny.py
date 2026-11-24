@@ -25,7 +25,7 @@ def align_genes(gene_1: str, gene_2: str) -> int:
 def synteny(database: list[Genome], arabidopsis_genome: list[str], threshold) -> dict:
     gene_dict = {gene.id: [] for gene in arabidopsis_genome}
     for random_genome in database:
-        pairs = compare_genomes(arabidopsis_genome, random_genome,threshold)
+        #pairs = compare_genomes(arabidopsis_genome, random_genome,threshold)
         for a_gene, random_gene in pairs:
             gene_dict[a_gene.id].append(random_gene)
     return gene_dict
