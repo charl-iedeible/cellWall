@@ -1,0 +1,7 @@
+Abbr.     Species             Common Name
+ulmi      Ulmus minor         field elm
+sare      Salix repens        creeping willow
+quro      Quercus robur       english oak
+quce      Quercus cerris      turkey oak
+potr      Populus tremula     european aspen
+alin      Alnus incana        grey alder
