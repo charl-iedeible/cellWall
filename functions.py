@@ -1,15 +1,16 @@
 from datatypes import Node, Genome, Chromosome, Gene
+from getCandidates import is_interest
 from Bio import SeqIO
 
 # define genome from GFF3
-def initialize_GFF3(filename_GFF3: str, filename_FASTA: str, cell_wall_genes:list[str], tmer_bound: int, match_bound: int) -> Genome:
+def initialize_GFF3(filename_GFF3: str, filename_FASTA: str, cell_wall_genes: dict, tmer_bound: int, match_bound: int) -> Genome:
     # turn FASTA into dictionary
 
-    genome = SeqIO.to_dict(SeqIO.parse(filename_FASTA, "fasta"))
-    
+    genome_seqs = SeqIO.to_dict(SeqIO.parse(filename_FASTA, "fasta"))
+   
     # initialize a genome object to append appropriate line data to
-    
-    species_name = filename.split("/")[-1].split("_gca")[0]
+   
+    species_name = 'test_species'#filename.split("/")[-1].split("_gca")[0]
     genome = Genome(species_name=species_name)
 
     searching = True
@@ -18,7 +19,7 @@ def initialize_GFF3(filename_GFF3: str, filename_FASTA: str, cell_wall_genes:lis
 
     # line by line, determine if we are searching for parent, initializing parent, or adding nodes
 
-    with open(filename) as file:
+    with open(filename_GFF3) as file:
         for line in file:
             line = line.rstrip()
 
@@ -37,27 +38,29 @@ def initialize_GFF3(filename_GFF3: str, filename_FASTA: str, cell_wall_genes:lis
                         chromo_len = int(fields[4]) - int(fields[3])
                         current_chromo = Chromosome(chromo_id, genome.root, chromo_len)
                         genome.add_node(current_chromo, genome.root)
-                
+               
             elif initializing:
                 if line[0] == '#':
                     continue
                 fields = line.split("\t")  # split tab string into fields
-                attributes = parse_attributes(fields[8])    # get dictionary of attributes
+                attributes = parse_attributes(fields[8])   # get dictionary of attributes
                 # check if a gene or new chomosome
                 gene_id = attributes.get("ID", "")
                 if gene_id[:4] == 'gene':
-                    if is_interest(genome[gene_id], cell_wall_genes, tmer_bound, match_bound):
-                    # check if gene is a cell wall gene, skip rest
-                        initializing = False
-                        adding = True
-                        # initialize gene object and append to chromosome object
-                        gene_id = gene_id.split(":")[1]
-                        current_gene = Gene(gene_id, current_chromo)
-                        genome.add_node(current_gene, current_chromo)
-
-                    else:
-                        initializing = False
-                        searching = True
+                    querey_seq = genome_seqs.get(gene_id.split(':')[1])
+                    if querey_seq:
+                        if is_interest(querey_seq, cell_wall_genes, tmer_bound, match_bound):
+                        # check if gene is a cell wall gene, skip rest
+                            initializing = False
+                            adding = True
+                            # initialize gene object and append to chromosome object
+                            gene_id = gene_id.split(":")[1]
+                            current_gene = Gene(gene_id, current_chromo)
+                            genome.add_node(current_gene, current_chromo)
+                        else:
+                            initializing = False
+                            searching = True
+                       
                 elif gene_id[:6] == 'region':
                     # initialize chromosome and append to genome object
                     chromo_id = gene_id.split(":")[1]
@@ -72,8 +75,15 @@ def initialize_GFF3(filename_GFF3: str, filename_FASTA: str, cell_wall_genes:lis
                     initializing = True
                     continue
                 fields = line.split("\t")  # split tab string into fields
-                attributes = parse_attributes(fields[8])    # get dictionary of attributes  
-    return genome          
+                if fields[2] == 'mRNA':
+                    length = int(fields[4]) - int(fields[3])
+                    if current_gene.start == 0 or length > current_gene.end - current_gene.start:
+                        current_gene.start = int(fields[3])
+                        current_gene.end = int(fields[4])
+                        current_gene.strand = (fields[6] == '+')
+                        current_gene.sequence = get_sequences(gene_id, genome_seqs)[0]
+           
+    return genome     
 
 # parse attributes of line
 def parse_attributes(attributes: str) -> dict:
