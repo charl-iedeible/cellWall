@@ -6,11 +6,12 @@ def build_dict_updated(database: list[Genome]) -> dict:
     gene_dict = {}
     for genome in database:
         for gene in genome:
-            arth_id = gene.arth_match.gene_id
-            if arth_id in gene_dict:
-                gene_dict[arth_id].append(gene)
-            else:
-                gene_dict[arth_id] = [gene]
+            if gene.arth_match is not None:
+                arth_id = gene.arth_match.gene_id
+                if arth_id in gene_dict:
+                    gene_dict[arth_id].append(gene)
+                else:
+                    gene_dict[arth_id] = [gene]
     return gene_dict
 
 
