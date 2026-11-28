@@ -1,5 +1,19 @@
 from dataclasses import Genome, Chromosome, Gene
 
+
+#with chrom and updated gene class
+def build_dict_updated(database: list[Genome]) -> dict:
+    gene_dict = {}
+    for genome in database:
+        for gene in genome:
+            arth_id = gene.arth_match.gene_id
+            if arth_id in gene_dict:
+                gene_dict[arth_id].append(gene)
+            else:
+                gene_dict[arth_id] = [gene]
+    return gene_dict
+
+
 #pairwise alignment
 
 def compare_genomes(genome_1: Genome, genome_2: Genome, threshold: float) -> list[tuple]:
