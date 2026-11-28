@@ -1,6 +1,11 @@
 from datatypes import Node, Genome, Chromosome, Gene
-from getCandidates import is_interest
+from functions import is_interest
 from Bio import SeqIO
+
+def get_sequences(gene_id: str, genome_seqs: dict, start: Gene.start, end: Gene.end)-> list[str]:
+    chrom_id = gene_id.split(".")[0]
+    chrom_seq = genome_seqs[chrom_id].seq
+    return [str(chrom_seq[start:end])]
 
 # define genome from GFF3
 def initialize_GFF3(filename_GFF3: str, filename_FASTA: str, cell_wall_genes: dict, tmer_bound: int, match_bound: int) -> Genome:
@@ -82,8 +87,8 @@ def initialize_GFF3(filename_GFF3: str, filename_FASTA: str, cell_wall_genes: di
                         current_gene.end = int(fields[4])
                         current_gene.strand = (fields[6] == '+')
                         current_gene.sequence = get_sequences(gene_id, genome_seqs)[0]
-           
-    return genome     
+        
+    return genome          
 
 # parse attributes of line
 def parse_attributes(attributes: str) -> dict:
