@@ -41,6 +41,15 @@ class Gene(Node):
         self.strand: bool | None = None
         self.sequence: str | None = None
         self.family: str | None = None
+        self.arth_match: Arth_Gene | None = None
+
+class Arth_Gene(Node):
+    def __init__(self, gene_id: str, chromosome: Node):
+        super().__init__(node_id=gene_id, parent=chromosome)
+        self.start: int = 0
+        self.end: int = 0
+        self.strand: bool | None = None
+        self.sequence: str | None = None
 
 #class EvolutionaryTree:
     #def __init__(self, name):
